@@ -301,6 +301,75 @@
             z-index: 999;
         }
 
+        /* 비밀번호 팝업 */
+        .password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .password-modal {
+            background: var(--container-bg);
+            padding: 30px 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+        }
+        .password-modal h3 {
+            margin: 0 0 8px 0;
+            color: var(--text-main);
+            font-size: 1.2rem;
+        }
+        .password-modal p {
+            margin: 0 0 20px 0;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+        }
+        .password-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+        .password-input:focus {
+            border-color: var(--primary-color);
+        }
+        .password-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .password-submit:hover {
+            background: #0056b3;
+        }
+        .password-error {
+            color: #e74c3c;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            display: none;
+        }
+
         /* 모바일 반응형 */
         @media (max-width: 768px) {
             .sidebar {
@@ -347,6 +416,17 @@
     </style>
 </head>
 <body>
+<!-- 비밀번호 팝업 -->
+<div class="password-overlay" id="password-overlay">
+    <div class="password-modal">
+        <h3>🔒 비밀번호 입력</h3>
+        <p>서비스 이용을 위해 비밀번호를 입력해주세요.</p>
+        <input type="password" class="password-input" id="password-input" placeholder="비밀번호" autocomplete="off">
+        <button class="password-submit" id="password-submit">확인</button>
+        <div class="password-error" id="password-error">비밀번호가 올바르지 않습니다.</div>
+    </div>
+</div>
+
 <div class="main-wrapper">
     <!-- 모바일용 오버레이 -->
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -425,6 +505,42 @@
 
 <script>
     window.onload = function() {
+        // 비밀번호 확인
+        const PASSWORD = 'focus';
+        const passwordOverlay = document.getElementById('password-overlay');
+        const passwordInput = document.getElementById('password-input');
+        const passwordSubmit = document.getElementById('password-submit');
+        const passwordError = document.getElementById('password-error');
+        
+        // 세션 스토리지에서 인증 상태 확인
+        if (sessionStorage.getItem('sweetk_authenticated') === 'true') {
+            passwordOverlay.style.display = 'none';
+            initApp();
+        } else {
+            passwordInput.focus();
+        }
+        
+        function checkPassword() {
+            if (passwordInput.value === PASSWORD) {
+                sessionStorage.setItem('sweetk_authenticated', 'true');
+                passwordOverlay.style.display = 'none';
+                initApp();
+            } else {
+                passwordError.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+        
+        passwordSubmit.onclick = checkPassword;
+        passwordInput.onkeypress = (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkPassword();
+            }
+        };
+        
+        function initApp() {
         const chatMessages = document.getElementById('chat-messages');
         const userInput = document.getElementById('user-input');
         const modelSelect = document.getElementById('model-select');
@@ -694,6 +810,7 @@
         
         marked.setOptions({ breaks: true });
         init();
+        } // initApp 함수 끝
     };
 </script>
 </body>

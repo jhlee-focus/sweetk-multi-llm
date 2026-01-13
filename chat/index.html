@@ -250,10 +250,12 @@
         .msg-wrapper.user { align-self: flex-end; align-items: flex-end; }
         .model-tag { font-size: 0.7rem; font-weight: 700; color: var(--tag-text); background: var(--tag-bg); padding: 2px 8px; border-radius: 6px; width: fit-content; }
         
-        .message { padding: 10px 16px; border-radius: 18px; font-size: var(--chat-font-size); line-height: 1.5; color: var(--text-main); }
+        .message { padding: 10px 16px; border-radius: 18px; font-size: var(--chat-font-size); line-height: 1.5; color: var(--text-main); word-wrap: break-word; overflow-wrap: break-word; word-break: break-word; }
         .bot .message p { margin: 0; }
         .bot .message p + p { margin-top: 10px; }
         .bot .message { background-color: var(--bot-bubble); border: 1px solid var(--border-color); border-bottom-left-radius: 4px; }
+        .bot .message pre { white-space: pre-wrap; word-wrap: break-word; overflow-x: auto; }
+        .bot .message code { word-break: break-all; }
         .user .message { background-color: var(--user-bubble); color: white; border-bottom-right-radius: 4px; }
         
         /* 메시지 시간 표시 */
@@ -654,7 +656,7 @@
         function startNewChat() {
             currentChatId = Date.now();
             chatMessages.innerHTML = '';
-            addMessage("안녕하세요. <b>스위트케이</b>의 멀티 LLM 기반 AI 비서입니다. <br> 새로운 대화를 시작합니다. <b>AI 모델을 선택</b>하신 후에 무엇이든 물어보세요. <br>하단의 '<b>+</b>' 버튼을 누르시면 다양한 부가 기능을 이용하실 수 있습니다.", 'bot', false, "SweetK");
+            addMessage("안녕하세요. <b>스위트케이</b>의 멀티 LLM 기반 AI 비서입니다. <br> 새로운 대화를 시작합니다. <b>AI 모델을 선택</b>하신 후에 무엇이든 물어보세요. <br>하단의 '<b>+</b>' 버튼을 누르시면 다양한 부가 기능을 이용하실 수 있습니다.", 'bot', false, "System");
             renderHistory();
             // 모바일에서 새 채팅 시 사이드바 닫기
             if (isMobile()) closeMobileSidebar();
